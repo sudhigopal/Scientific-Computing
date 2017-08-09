@@ -1,0 +1,117 @@
+m=input('Enter the size of the matrix\n');
+n=input('Enter the size of the matrix\n');
+x = rand(m,n);
+a = 1;
+b = -1;
+for i = 1:m
+    for j = 1:n
+       H(i,j) = a + (b - a)*x(i,j);
+    end
+end
+q = 1;
+z = rand(m,q);
+for i = 1:m
+    for j = 1:q
+       Z(i,j) = a + (b - a)*z(i,j);
+    end
+end
+C = rand(1,1);
+
+A = H' * H;
+b = H' * Z;  %Because B' = z'*H. B = H'*z
+L = tril(A,-1);
+D = diag(diag(A));
+U = triu(A,1);
+X = zeros(n,1);
+X(:,1) = rand(n,1);
+i = 1;
+while i>0
+    X(:,i+1) = D\(b - (L+U) * X(:,i));
+    if norm(X(:,i+1)-X(:,i))<=8
+        break;
+    end
+    i=i+1;
+end
+fprintf('Jacobi Solution\n');
+disp(X);
+f1 = zeros(1);
+f1(:,1) = 1/2*(X(:,1)'*A*X(:,1)) - (b'*X(:,1)) + C;
+c = 1;
+while c>0
+    c=c+1;
+    f1(:,c) = 1/2*(X(:,c)'*A*X(:,c)) - (b'*X(:,c)) + C;
+    if(c>i)
+        break;
+    end
+end
+fprintf('Jacobi f(x)\n');
+disp(f1);
+X1 = zeros(n,1);
+X1(:,1) = X(:,1);
+M = (L+D);
+j = 1;
+while j>0
+    X1(:,j+1) = M\(b - (U) * X1(:,j));
+    if norm(X1(:,j+1)-X1(:,j))<10^-2
+        break;
+    end
+    j=j+1;
+end
+fprintf('Gauss Seidel Method for X\n');
+disp(X1);
+f2 = zeros(1);
+f2(:,1) = 1/2*(X1(:,1)'*A*X1(:,1)) - (b'*X1(:,1)) + C;
+c1 = 1;
+while c1>0
+    c1=c1+1;
+    f2(:,c1) = 1/2*(X1(:,c1)'*A*X1(:,c1)) - (b'*X1(:,c1)) + C;
+    if(c1>j)
+        break;
+    end
+end
+fprintf('Gauss-Seidel f(x)\n');
+disp(f2);
+%SOR (D+wL)X(k+1) = b + ((1-w)D -WU))X(k)
+%w = 0.5
+X2 = zeros(n,1);
+X2(:,1) = X(:,1);
+k=1;
+M1 = (D + 0.5*L);
+N1 = 0.5*(D - U);
+while k>0
+    X2(:,k+1) = M1\(b + N1 * X2(:,k));
+    if (norm(X2(:,k+1)-X2(:,k)))<10^-2
+        break;
+    end
+    k=k+1;
+end
+fprintf('SOR method for solving X\n');
+disp(X2);
+f3 = zeros(1);
+f3(:,1) = 1/2*(X2(:,1)'*A*X2(:,1)) - (b'*X2(:,1)) + C;
+c2 = 1;
+while c2>0
+    c2=c2+1;
+    f3(:,c2) = 1/2*(X2(:,c2)'*A*X2(:,c2)) - (b'*X2(:,c2)) + C;
+    if(c2>k)
+        break;
+    end
+end
+fprintf('SOR f(x)\n');
+disp(f3);
+figure
+subplot(2,2,1);
+plot(f1);
+xlabel('k');
+ylabel('f(k)');
+title('Jacobi Method');
+subplot(2,2,2);
+plot(f2);
+xlabel('k');
+ylabel('f(k)');
+title('Gauss-Seidel Method');
+subplot(2,2,3);
+plot(f3);
+xlabel('k');
+ylabel('f(k)');
+title('SOR method');
