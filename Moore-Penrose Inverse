@@ -1,0 +1,35 @@
+%Sudhindra Gopal Krishna
+
+Ha = [1 2 3 4]';
+Hb = [1 1 1 1 ; 1 2 3 4]';
+Hp1 = (Ha' * Ha) \ Ha'
+Hp2 = (Hb' * Hb) \ Hb'
+fprintf('Moore - Penrose Inverse\n');
+fprintf('Result 1\n');
+fprintf('for Matrix 1\n');
+fprintf ('(H * H+ * H) = H\n');
+Ha1 = Ha * Hp1 * Ha
+fprintf('for matrix 2\n');
+Hb1 = Hb * Hp2 * Hb
+fprintf('result 2\n');
+fprintf('(H+ * H * H+) = H+\n');
+Ha2 = Hp1 * Ha * Hp1
+Hb2 = Hp2 * Hb * Hp2
+fprintf('result 3\n');
+fprintf('for Matrix 1\n');
+fprintf('transpose(H*H+) = H*H+\n');
+Haspl = Ha * Hp1
+Ha3 = (Ha * Hp1)'
+fprintf('for matrix 2\n');
+fprintf('transpose(H*H+) = H*H+\n');
+Hbspl = Hb * Hp2
+Hb3 = (Hb * Hp2)'
+fprintf('result 4\n');
+fprintf('for matrix 1\n');
+fprintf('transpose(H+ * H) = (H+ * H)\n');
+Haspl2 = Hp1 * Ha 
+Ha4 = (Hp1 * Ha)'
+fprintf('for matrix 2\n');
+fprintf('transpose(H+ * H) = (H+ * H)\n');
+Hbspl2 = Hp2 * Hb 
+Hb4 = (Hp2 * Hb)'
